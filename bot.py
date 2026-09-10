@@ -226,6 +226,3 @@ async def personal(interaction: discord.Interaction):
 
 # Reemplaza 'TOKEN' por tu token o asegúrate de que se cargue correctamente de tu .env
 bot.run(TOKEN)
-
-
-bot.run(TOKEN)

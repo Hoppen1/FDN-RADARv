@@ -42,31 +42,32 @@ class JustificacionView(discord.ui.View):
       return
 
     embed = interaction.message.embeds[0]
-    fields = embed.fields
-    nuevos_campos = []
-
-    for field in fields:
+    
+    # Actualizamos el campo de estado directamente por su índice o nombre
+    encontrado = False
+    for i, field in enumerate(embed.fields):
       if field.name == "Estado":
-        nuevos_campos.append(
-            discord.EmbedField(
-                name="Estado", value="🟢 Aceptada", inline=field.inline
-            )
+        embed.set_field_at(
+            i,
+            name="Estado",
+            value="🟢 Aceptada",
+            inline=field.inline
         )
-      else:
-        nuevos_campos.append(field)
-
-    embed.clear_fields()
-    for f in nuevos_campos:
-      embed.add_field(name=f.name, value=f.value, inline=f.inline)
+        encontrado = True
+        break
+    
+    # Si por alguna razón no encontró el campo exacto, lo agregamos
+    if not encontrado:
+      embed.add_field(name="Estado", value="🟢 Aceptada", inline=False)
 
     embed.color = discord.Color.green()
 
-    # Modificamos el estado del botón dentro de la vista actual
+    # Desactivamos el botón visualmente
     button.disabled = True
     button.label = "Validada"
     button.style = discord.ButtonStyle.secondary
 
-    # Actualizamos el mensaje con el embed modificado y la misma vista (con el botón ya desactivado)
+    # Editamos el mensaje enviando la vista actualizada
     await interaction.message.edit(embed=embed, view=self)
     await interaction.followup.send(
         "Has validado la justificación correctamente.", ephemeral=True

@@ -33,8 +33,11 @@ class JustificacionView(discord.ui.View):
   async def validar(
       self, interaction: discord.Interaction, button: discord.ui.Button
   ):
+    # Respondemos de inmediato para evitar el error de "la aplicación no ha respondido a tiempo"
+    await interaction.response.defer(ephemeral=True)
+
     if not interaction.message.embeds:
-      await interaction.response.send_message(
+      await interaction.followup.send(
           "No se encontró el embed.", ephemeral=True
       )
       return
@@ -63,7 +66,7 @@ class JustificacionView(discord.ui.View):
     button.style = discord.ButtonStyle.secondary
 
     await interaction.message.edit(embed=embed, view=self)
-    await interaction.response.send_message(
+    await interaction.followup.send(
         "Has validado la justificación correctamente.", ephemeral=True
     )
 
@@ -220,6 +223,9 @@ async def personal(interaction: discord.Interaction):
   embed.set_footer(text="Panel actualizado dinámicamente")
 
   await interaction.response.send_message(embed=embed)
+
+# Reemplaza 'TOKEN' por tu token o asegúrate de que se cargue correctamente de tu .env
+bot.run(TOKEN)
 
 
 bot.run(TOKEN)

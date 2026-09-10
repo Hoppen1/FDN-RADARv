@@ -21,7 +21,6 @@ ROL_PERSONAL_ID = 1472065658752733214
 
 
 class JustificacionView(discord.ui.View):
-
   def __init__(self):
     super().__init__(timeout=None)
 
@@ -61,11 +60,13 @@ class JustificacionView(discord.ui.View):
       embed.add_field(name=f.name, value=f.value, inline=f.inline)
 
     embed.color = discord.Color.green()
+
+    # Modificamos el estado del botón dentro de la vista actual
     button.disabled = True
     button.label = "Validada"
     button.style = discord.ButtonStyle.secondary
 
-    # Actualizamos el mensaje con la vista modificada
+    # Actualizamos el mensaje con el embed modificado y la misma vista (con el botón ya desactivado)
     await interaction.message.edit(embed=embed, view=self)
     await interaction.followup.send(
         "Has validado la justificación correctamente.", ephemeral=True
@@ -160,7 +161,7 @@ class MensajeModal(discord.ui.Modal, title="Crear Mensaje Informativo"):
 async def on_ready():
   print(f"¡Conectado como {bot.user}!")
   
-  # Registramos la vista de manera persistente para que los botones sigan respondiendo tras reiniciar
+  # Registramos la vista globalmente de forma persistente
   bot.add_view(JustificacionView())
   
   try:

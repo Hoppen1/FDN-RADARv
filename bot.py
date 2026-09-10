@@ -33,7 +33,7 @@ class JustificacionView(discord.ui.View):
   async def validar(
       self, interaction: discord.Interaction, button: discord.ui.Button
   ):
-    # Respondemos de inmediato para evitar el error de "la aplicación no ha respondido a tiempo"
+    # Respondemos de inmediato para evitar el error de tiempo de espera
     await interaction.response.defer(ephemeral=True)
 
     if not interaction.message.embeds:
@@ -65,6 +65,7 @@ class JustificacionView(discord.ui.View):
     button.label = "Validada"
     button.style = discord.ButtonStyle.secondary
 
+    # Actualizamos el mensaje con la vista modificada
     await interaction.message.edit(embed=embed, view=self)
     await interaction.followup.send(
         "Has validado la justificación correctamente.", ephemeral=True
@@ -158,6 +159,10 @@ class MensajeModal(discord.ui.Modal, title="Crear Mensaje Informativo"):
 @bot.event
 async def on_ready():
   print(f"¡Conectado como {bot.user}!")
+  
+  # Registramos la vista de manera persistente para que los botones sigan respondiendo tras reiniciar
+  bot.add_view(JustificacionView())
+  
   try:
     synced = await bot.tree.sync()
     print(f"Sincronizados {len(synced)} comandos slash.")
@@ -224,5 +229,4 @@ async def personal(interaction: discord.Interaction):
 
   await interaction.response.send_message(embed=embed)
 
-# Reemplaza 'TOKEN' por tu token o asegúrate de que se cargue correctamente de tu .env
 bot.run(TOKEN)
